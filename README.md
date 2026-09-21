@@ -9,8 +9,8 @@ The data folder is gitignored because the raw CSVs are too large for GitHub (one
 3. AI Vs Human Text: https://www.kaggle.com/datasets/shanegerami/ai-vs-human-text
 
 # Reference
-
 Used for feature engineering
-https://academic.oup.com/dsh/advance-article/doi/10.1093/llc/fqag064/8714041
-https://arxiv.org/abs/2303.03697
-https://www.researchgate.net/publication/398588043_Feature-Based_Detection_of_AI-Generated_Text_An_Analysis_of_Stylometric_and_Perplexity_Markers_in_Contemporary_Large_Language_Models
+
+1. https://academic.oup.com/dsh/advance-article/doi/10.1093/llc/fqag064/8714041
+2. https://arxiv.org/abs/2303.03697
+3. https://www.researchgate.net/publication/398588043_Feature-Based_Detection_of_AI-Generated_Text_An_Analysis_of_Stylometric_and_Perplexity_Markers_in_Contemporary_Large_Language_Models
