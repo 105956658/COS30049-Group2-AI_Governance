@@ -1,0 +1,18 @@
+{
+    "sourceFile": "regressor.ppy",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1790602892298,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1790602892298,
+            "name": "Commit-0",
+            "content": "\"\"\"Model 3 - RandomForestRegressor: document-level score + confidence range.\r\n\r\nFit on the VALIDATION split: the classifier and GMM never saw those documents, so\r\ntheir sentence outputs are honest (not over-confident, as they would be on train data).\r\nEvaluate on the untouched test split and the external 2026 holdout.\r\n\"\"\"\r\nimport argparse, os\r\nimport joblib, numpy as np, pandas as pd\r\nfrom sklearn.ensemble import RandomForestRegressor\r\nfrom sklearn.metrics import roc_auc_score, mean_absolute_error\r\nfrom features import doc_feature_names\r\nfrom pipeline import build_doc_matrix, predict_with_interval\r\n\r\nap = argparse.ArgumentParser()\r\nap.add_argument('--fit', default='data/splits/val.parquet')\r\nap.add_argument('--evals', nargs='+', default=['data/splits/test.parquet',\r\n                                               'data/splits/holdout_2026.parquet'])\r\nap.add_argument('--n-fit-docs', type=int, default=20000)\r\nap.add_argument('--n-eval-docs', type=int, default=10000)\r\nap.add_argument('--model-dir', default='models')\r\na = ap.parse_args()\r\n\r\nclf = joblib.load(f'{a.model_dir}/classifier.joblib')\r\ngb = joblib.load(f'{a.model_dir}/gmm.joblib')\r\nk = gb['k']\r\n\r\ndf = pd.read_parquet(a.fit)\r\ndf = df.sample(min(a.n_fit_docs, len(df)), random_state=4).reset_index(drop=True)\r\nX, keep = build_doc_matrix(df['text'], clf, gb)\r\ny = df['is_ai'].to_numpy()[keep].astype(float)\r\nprint(f'fitting on {len(y):,} documents, {X.shape[1]} features')\r\n\r\nrfr = RandomForestRegressor(n_estimators=300, min_samples_leaf=3, max_features=0.5,\r\n                            n_jobs=-1, random_state=0).fit(X, y)\r\nfor n, imp in sorted(zip(doc_feature_names(k), rfr.feature_importances_), key=lambda t: -t[1])[:8]:\r\n    print(f'  {n:24s} {imp:.3f}')\r\n\r\nnames = doc_feature_names(k)\r\nmean_p_col = names.index('mean_p')\r\nfor path in a.evals:\r\n    d = pd.read_parquet(path)\r\n    d = d.sample(min(a.n_eval_docs, len(d)), random_state=5).reset_index(drop=True)\r\n    Xe, kp = build_doc_matrix(d['text'], clf, gb)\r\n    ye = d['is_ai'].to_numpy()[kp]\r\n    score, lo, hi = predict_with_interval(rfr, Xe)\r\n    print(f'\\n[{os.path.basename(path)}] n={len(ye):,}')\r\n    print(f'  RFR score      AUC={roc_auc_score(ye, score):.3f}  acc@0.5={((score > .5) == ye).mean():.3f}  '\r\n          f'MAE={mean_absolute_error(ye, score):.3f}')\r\n    print(f'  baseline mean sentence prob  AUC={roc_auc_score(ye, Xe[:, mean_p_col]):.3f}')\r\n    print(f'  90% tree band  mean width={np.mean(hi - lo):.3f}')\r\n\r\nos.makedirs(a.model_dir, exist_ok=True)\r\njoblib.dump({'model': rfr, 'k': k, 'feature_names': names}, f'{a.model_dir}/regressor.joblib')\r\nprint('\\nsaved', f'{a.model_dir}/regressor.joblib')"
+        }
+    ]
+}

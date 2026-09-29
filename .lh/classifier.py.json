@@ -1,0 +1,18 @@
+{
+    "sourceFile": "classifier.py",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1790602855321,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1790602855321,
+            "name": "Commit-0",
+            "content": "\"\"\"Model 1 - per-sentence classifier (sentence-level P(AI)). Drives the colouring.\r\n\r\nUsage: python 01_classifier.py --model logreg   (or --model svc for calibrated LinearSVC)\r\n\"\"\"\r\nimport argparse, os\r\nimport joblib, numpy as np, pandas as pd\r\nfrom sklearn.calibration import CalibratedClassifierCV\r\nfrom sklearn.linear_model import LogisticRegression\r\nfrom sklearn.metrics import accuracy_score, roc_auc_score, brier_score_loss\r\nfrom sklearn.pipeline import make_pipeline\r\nfrom sklearn.preprocessing import StandardScaler\r\nfrom sklearn.svm import LinearSVC\r\nfrom features import sentence_dataset, FEATURE_NAMES\r\n\r\nap = argparse.ArgumentParser()\r\nap.add_argument('--model', choices=['logreg', 'svc'], default='logreg')\r\nap.add_argument('--train', default='data/splits/train.parquet')\r\nap.add_argument('--val', default='data/splits/val.parquet')\r\nap.add_argument('--n-docs', type=int, default=40000)\r\nap.add_argument('--max-sent-per-doc', type=int, default=12)\r\nap.add_argument('--out', default='models/classifier.joblib')\r\na = ap.parse_args()\r\n\r\nX, y = sentence_dataset(pd.read_parquet(a.train), a.n_docs, a.max_sent_per_doc, seed=1)\r\nXv, yv = sentence_dataset(pd.read_parquet(a.val), a.n_docs // 8, a.max_sent_per_doc, seed=2)\r\nprint(f'train sentences: {len(y):,} (AI share {y.mean():.2f}) | val sentences: {len(yv):,}')\r\n\r\nif a.model == 'logreg':\r\n    clf = make_pipeline(StandardScaler(),\r\n                        LogisticRegression(max_iter=1000, class_weight='balanced'))\r\nelse:  # LinearSVC has no predict_proba -> Platt scaling via CalibratedClassifierCV\r\n    clf = make_pipeline(StandardScaler(),\r\n                        CalibratedClassifierCV(LinearSVC(dual=False, class_weight='balanced'),\r\n                                               method='sigmoid', cv=3))\r\nclf.fit(X, y)\r\n\r\np = clf.predict_proba(Xv)[:, 1]\r\nprint(f'val sentence-level  acc={accuracy_score(yv, p > 0.5):.3f}  '\r\n      f'AUC={roc_auc_score(yv, p):.3f}  Brier={brier_score_loss(yv, p):.3f}')\r\nif a.model == 'logreg':\r\n    coefs = clf[-1].coef_[0]\r\n    for n, c in sorted(zip(FEATURE_NAMES, coefs), key=lambda t: t[1]):\r\n        print(f'  {n:22s} {c:+.3f}')\r\n\r\nos.makedirs(os.path.dirname(a.out), exist_ok=True)\r\njoblib.dump(clf, a.out)\r\nprint('saved', a.out)"
+        }
+    ]
+}

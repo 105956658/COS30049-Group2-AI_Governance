@@ -1,0 +1,18 @@
+{
+    "sourceFile": "pipeline.py",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1790602911170,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1790602911170,
+            "name": "Commit-0",
+            "content": "\"\"\"Glue used by 03_regressor.py and by the app: chains classifier -> GMM -> RFR.\"\"\"\r\nimport joblib\r\nimport numpy as np\r\nfrom features import (featurize_docs, aggregate_doc, split_sentences, is_scorable,\r\n                      sentence_features)\r\n\r\n\r\ndef load_models(model_dir='models'):\r\n    return {\r\n        'clf': joblib.load(f'{model_dir}/classifier.joblib'),\r\n        'gmm': joblib.load(f'{model_dir}/gmm.joblib'),      # dict: scaler, gmm, k\r\n        'rfr': joblib.load(f'{model_dir}/regressor.joblib'),  # dict: model, k\r\n    }\r\n\r\n\r\ndef sentence_scores(F, clf, gmm_bundle):\r\n    p = clf.predict_proba(F)[:, 1]                           # P(AI) per sentence\r\n    Z = np.clip(gmm_bundle['scaler'].transform(F), -5, 5)\r\n    return p, gmm_bundle['gmm'].predict_proba(Z)             # soft cluster memberships\r\n\r\n\r\ndef build_doc_matrix(texts, clf, gmm_bundle, n_jobs=-1):\r\n    \"\"\"Document-level feature matrix. Returns (X, kept_row_indices).\"\"\"\r\n    Fs = featurize_docs(texts, n_jobs)\r\n    keep = [i for i, F in enumerate(Fs) if len(F) > 0]\r\n    big = np.vstack([Fs[i] for i in keep])\r\n    p, post = sentence_scores(big, clf, gmm_bundle)\r\n    offs = np.cumsum([0] + [len(Fs[i]) for i in keep])\r\n    rows = [aggregate_doc(p[a:b], post[a:b], np.expm1(big[a:b, 0]))\r\n            for a, b in zip(offs[:-1], offs[1:])]\r\n    return np.vstack(rows), np.array(keep)\r\n\r\n\r\ndef predict_with_interval(rfr, X, lo=5, hi=95):\r\n    \"\"\"Mean tree prediction plus a percentile band across the individual trees.\"\"\"\r\n    per_tree = np.stack([t.predict(X.astype(np.float32)) for t in rfr.estimators_])\r\n    return per_tree.mean(0), np.percentile(per_tree, lo, axis=0), np.percentile(per_tree, hi, axis=0)\r\n\r\n\r\ndef analyze(text, models):\r\n    \"\"\"What the app calls: per-sentence scores + overall score with confidence range.\"\"\"\r\n    sents = split_sentences(text)\r\n    mask = [is_scorable(s) for s in sents]\r\n    scored = [s for s, m in zip(sents, mask) if m]\r\n    if not scored:\r\n        return None\r\n    F = np.array([sentence_features(s) for s in scored], dtype=np.float32)\r\n    p, post = sentence_scores(F, models['clf'], models['gmm'])\r\n    x = aggregate_doc(p, post, np.expm1(F[:, 0]))[None]\r\n    score, low, high = predict_with_interval(models['rfr']['model'], x)\r\n    it = iter(p)\r\n    return {\r\n        'sentences': [{'text': s, 'p_ai': float(next(it)) if m else None}\r\n                      for s, m in zip(sents, mask)],   # None = too short, render neutral\r\n        'overall': float(score[0]), 'low': float(low[0]), 'high': float(high[0]),\r\n    }"
+        }
+    ]
+}

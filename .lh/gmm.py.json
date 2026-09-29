@@ -1,0 +1,18 @@
+{
+    "sourceFile": "gmm.py",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1790602873189,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1790602873189,
+            "name": "Commit-0",
+            "content": "\"\"\"Model 2 - Gaussian Mixture on sentence stylometry (unsupervised, labels never used to fit).\r\n\r\nOutputs soft cluster memberships per sentence. Labels are only used afterwards to\r\ndescribe what each cluster looks like.\r\n\"\"\"\r\nimport argparse, os\r\nimport joblib, numpy as np, pandas as pd\r\nfrom sklearn.metrics import normalized_mutual_info_score\r\nfrom sklearn.mixture import GaussianMixture\r\nfrom sklearn.preprocessing import StandardScaler\r\nfrom features import sentence_dataset\r\n\r\nap = argparse.ArgumentParser()\r\nap.add_argument('--train', default='data/splits/train.parquet')\r\nap.add_argument('--n-docs', type=int, default=20000)\r\nap.add_argument('--max-sent-per-doc', type=int, default=8)\r\nap.add_argument('--k', type=int, default=None, help='fix k instead of choosing by BIC')\r\nap.add_argument('--kmax', type=int, default=8)\r\nap.add_argument('--out', default='models/gmm.joblib')\r\na = ap.parse_args()\r\n\r\nX, y = sentence_dataset(pd.read_parquet(a.train), a.n_docs, a.max_sent_per_doc, seed=3)\r\nscaler = StandardScaler().fit(X)\r\nZ = np.clip(scaler.transform(X), -5, 5)\r\nprint(f'{len(Z):,} sentences')\r\n\r\nk = a.k\r\nif k is None:\r\n    sub = Z[np.random.default_rng(0).choice(len(Z), min(40000, len(Z)), replace=False)]\r\n    bics = {}\r\n    for kk in range(2, a.kmax + 1):\r\n        bics[kk] = GaussianMixture(kk, covariance_type='full', random_state=0).fit(sub).bic(sub)\r\n        print(f'  k={kk}  BIC={bics[kk]:.0f}')\r\n    k = min(bics, key=bics.get)\r\nprint('using k =', k)\r\n\r\ngmm = GaussianMixture(k, covariance_type='full', n_init=2, random_state=0).fit(Z)\r\nhard = gmm.predict(Z)\r\nprint(f'NMI(cluster, label) = {normalized_mutual_info_score(y, hard):.3f}  (interpretation only)')\r\nprint(pd.DataFrame({'c': hard, 'ai': y}).groupby('c')['ai'].agg(['size', 'mean'])\r\n      .rename(columns={'mean': 'ai_share'}).round(3))\r\n\r\nos.makedirs(os.path.dirname(a.out), exist_ok=True)\r\njoblib.dump({'scaler': scaler, 'gmm': gmm, 'k': k}, a.out)\r\nprint('saved', a.out)"
+        }
+    ]
+}
