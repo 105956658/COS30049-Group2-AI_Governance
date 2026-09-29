@@ -3,11 +3,15 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 0,
+            "activePatchIndex": 1,
             "patches": [
                 {
                     "date": 1790602873189,
                     "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1790687487879,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,5 @@\n-\"\"\"Model 2 - Gaussian Mixture on sentence stylometry (unsupervised, labels never used to fit).\r\n-\r\n-Outputs soft cluster memberships per sentence. Labels are only used afterwards to\r\n-describe what each cluster looks like.\r\n-\"\"\"\r\n+\"\"\"Model 2 - Gaussian Mixture on sentence stylometry (unsupervised, labels never used to fit).\"\"\"\r\n import argparse, os\r\n import joblib, numpy as np, pandas as pd\r\n from sklearn.metrics import normalized_mutual_info_score\r\n from sklearn.mixture import GaussianMixture\r\n@@ -13,10 +9,10 @@\n ap = argparse.ArgumentParser()\r\n ap.add_argument('--train', default='data/splits/train.parquet')\r\n ap.add_argument('--n-docs', type=int, default=20000)\r\n ap.add_argument('--max-sent-per-doc', type=int, default=8)\r\n-ap.add_argument('--k', type=int, default=None, help='fix k instead of choosing by BIC')\r\n-ap.add_argument('--kmax', type=int, default=8)\r\n+ap.add_argument('--k', type=int, default=None)\r\n+ap.add_argument('--kmax', type=int, default=15)\r\n ap.add_argument('--out', default='models/gmm.joblib')\r\n a = ap.parse_args()\r\n \r\n X, y = sentence_dataset(pd.read_parquet(a.train), a.n_docs, a.max_sent_per_doc, seed=3)\r\n@@ -28,14 +24,15 @@\n if k is None:\r\n     sub = Z[np.random.default_rng(0).choice(len(Z), min(40000, len(Z)), replace=False)]\r\n     bics = {}\r\n     for kk in range(2, a.kmax + 1):\r\n-        bics[kk] = GaussianMixture(kk, covariance_type='full', random_state=0).fit(sub).bic(sub)\r\n+        bics[kk] = GaussianMixture(kk, covariance_type='full', reg_covar=1e-4,\r\n+                                   random_state=0).fit(sub).bic(sub)\r\n         print(f'  k={kk}  BIC={bics[kk]:.0f}')\r\n     k = min(bics, key=bics.get)\r\n print('using k =', k)\r\n \r\n-gmm = GaussianMixture(k, covariance_type='full', n_init=2, random_state=0).fit(Z)\r\n+gmm = GaussianMixture(k, covariance_type='full', reg_covar=1e-4, n_init=2, random_state=0).fit(Z)\r\n hard = gmm.predict(Z)\r\n print(f'NMI(cluster, label) = {normalized_mutual_info_score(y, hard):.3f}  (interpretation only)')\r\n print(pd.DataFrame({'c': hard, 'ai': y}).groupby('c')['ai'].agg(['size', 'mean'])\r\n       .rename(columns={'mean': 'ai_share'}).round(3))\r\n"
                 }
             ],
             "date": 1790602873189,
