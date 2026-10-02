@@ -3,11 +3,15 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 0,
+            "activePatchIndex": 1,
             "patches": [
                 {
                     "date": 1790602911170,
                     "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1790688000803,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,5 @@\n-\"\"\"Glue used by 03_regressor.py and by the app: chains classifier -> GMM -> RFR.\"\"\"\r\n+\"\"\"Glue used by regressor.py and by the app: chains classifier -> GMM -> RFR.\"\"\"\r\n import joblib\r\n import numpy as np\r\n from features import (featurize_docs, aggregate_doc, split_sentences, is_scorable,\r\n                       sentence_features)\r\n"
                 }
             ],
             "date": 1790602911170,

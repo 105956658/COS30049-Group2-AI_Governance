@@ -12,9 +12,9 @@ from features import doc_feature_names
 from pipeline import build_doc_matrix, predict_with_interval
 
 ap = argparse.ArgumentParser()
-ap.add_argument('--fit', default='data/splits/val.parquet')
-ap.add_argument('--evals', nargs='+', default=['data/splits/test.parquet',
-                                               'data/splits/holdout_2026.parquet'])
+ap.add_argument('--fit', default='data/splits/val.csv')
+ap.add_argument('--evals', nargs='+', default=['data/splits/test.csv',
+                                               'data/splits/holdout_2026.csv'])
 ap.add_argument('--n-fit-docs', type=int, default=20000)
 ap.add_argument('--n-eval-docs', type=int, default=10000)
 ap.add_argument('--model-dir', default='models')
@@ -24,7 +24,7 @@ clf = joblib.load(f'{a.model_dir}/classifier.joblib')
 gb = joblib.load(f'{a.model_dir}/gmm.joblib')
 k = gb['k']
 
-df = pd.read_parquet(a.fit)
+df = pd.read_csv(a.fit)
 df = df.sample(min(a.n_fit_docs, len(df)), random_state=4).reset_index(drop=True)
 X, keep = build_doc_matrix(df['text'], clf, gb)
 y = df['is_ai'].to_numpy()[keep].astype(float)
@@ -38,7 +38,7 @@ for n, imp in sorted(zip(doc_feature_names(k), rfr.feature_importances_), key=la
 names = doc_feature_names(k)
 mean_p_col = names.index('mean_p')
 for path in a.evals:
-    d = pd.read_parquet(path)
+    d = pd.read_csv(path)
     d = d.sample(min(a.n_eval_docs, len(d)), random_state=5).reset_index(drop=True)
     Xe, kp = build_doc_matrix(d['text'], clf, gb)
     ye = d['is_ai'].to_numpy()[kp]

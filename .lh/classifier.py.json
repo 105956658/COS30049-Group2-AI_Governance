@@ -3,11 +3,15 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 0,
+            "activePatchIndex": 1,
             "patches": [
                 {
                     "date": 1790602855321,
                     "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1790688049515,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,7 @@\n \"\"\"Model 1 - per-sentence classifier (sentence-level P(AI)). Drives the colouring.\r\n \r\n-Usage: python 01_classifier.py --model logreg   (or --model svc for calibrated LinearSVC)\r\n+Usage: python classifier.py --model logreg   (or --model svc for calibrated LinearSVC)\r\n \"\"\"\r\n import argparse, os\r\n import joblib, numpy as np, pandas as pd\r\n from sklearn.calibration import CalibratedClassifierCV\r\n"
                 }
             ],
             "date": 1790602855321,

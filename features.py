@@ -19,6 +19,7 @@ FUNCTION_WORDS = {
     'can', 'could', 'may', 'might', 'must', 'not', 'no', 'if', 'than', 'too', 'very', 'just',
     'also', 'only',
 }
+
 FIRST_PERSON = {'i', 'me', 'my', 'myself', 'we', 'our', 'us'}
 MIN_WORDS = 4  # sentences shorter than this are not scored (too little signal)
 

@@ -1,4 +1,4 @@
-"""Glue used by 03_regressor.py and by the app: chains classifier -> GMM -> RFR."""
+"""Glue used by regressor.py and by the app: chains classifier -> GMM -> RFR."""
 import joblib
 import numpy as np
 from features import (featurize_docs, aggregate_doc, split_sentences, is_scorable,
