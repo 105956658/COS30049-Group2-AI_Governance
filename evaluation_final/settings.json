@@ -1,0 +1,12 @@
+{
+  "test": "data/splits/test.parquet",
+  "holdout": "data/splits/holdout_2026.parquet",
+  "skip_holdout": false,
+  "model_dir": "models",
+  "output": "evaluation_final",
+  "threshold": 0.5,
+  "max_docs": 10000,
+  "n_jobs": 1,
+  "bootstrap": 200,
+  "seed": 5
+}
