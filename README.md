@@ -3,15 +3,19 @@ Group project for COS30049 Computing Technology Innovation Project
 
 # Environment Setup (Requires Miniconda or Anaconda)
 
-# Create the environment with the exact versions used in the report
-conda create -n ai-detect python=3.13 -y
-conda activate ai-detect
+1. Create the environment with the exact versions used in the report
 
-# Core libraries
-conda install -c conda-forge pandas=3.0.6 numpy=2.5.3 scikit-learn=1.9.1 lightgbm=4.7.0 joblib=1.6.0 -y
+>> conda create -n ai-detect python=3.13 -y
 
-#  plotting + notebook (EDA only)
-conda install -c conda-forge matplotlib seaborn jupyter -y
+>> conda activate ai-detect
+
+2. Core libraries
+
+>> conda install -c conda-forge pandas=3.0.6 numpy=2.5.3 scikit-learn=1.9.1 lightgbm=4.7.0 joblib=1.6.0 -y
+
+3. Plotting + notebook (EDA only)
+
+>> conda install -c conda-forge matplotlib seaborn jupyter -y
 
 # Data
 The data folder is gitignored because the raw CSVs are too large for GitHub (one exceeds the 100MB hard limit). Download the datasets yourself and place them in the data folder before running the file:
@@ -24,30 +28,35 @@ The data folder is gitignored because the raw CSVs are too large for GitHub (one
 # Data processing
 Run the notebook top to botton:
 
-jupyter notebook eda.ipynb
+>> jupyter notebook eda.ipynb
 
 # Train the models
 Run in this order – each step uses the outputs of the previous one. All scripts use fixed random seeds.
 
-# Baseline sentence classifiers (optional – used for the comparison in Table 3)
-python classifier.py --model logreg     # -> models/clf_logreg.joblib
-python classifier.py --model svc        # -> models/clf_svc.joblib
+Baseline sentence classifiers
+>> python classifier.py --model logreg     # -> models/clf_logreg.joblib
 
-# Final sentence classifier: LightGBM
-#     early stopping uses 5,000 documents held back from the training split
-python lgbm_classifier.py               # -> models/classifier.joblib
+>> python classifier.py --model svc        # -> models/clf_svc.joblib
 
-# GMM clustering on AI training sentences only (k = 6, full covariance)
-#     also saves the BIC curve and cluster profile tables
-python gmm.py --k 6                     # -> models/gmm.joblib            
+Final sentence classifier: LightGBM
+(early stopping uses 5,000 documents held back from the training split)
 
-# Document-level regressor, fitted on the VALIDATION split
-#     (documents the classifier and GMM never saw), then evaluated on test + holdout_2026
-python regressor.py                     # -> models/regressor.joblib
+>> python lgbm_classifier.py               # -> models/classifier.joblib
+
+GMM clustering on AI training sentences only (k = 6, full covariance)
+(also saves the BIC curve and cluster profile tables)
+
+>>python gmm.py --k 6                     # -> models/gmm.joblib            
+
+Document-level regressor, fitted on the VALIDATION split
+(documents the classifier and GMM never saw), then evaluated on test + holdout_2026
+
+>>python regressor.py                     # -> models/regressor.joblib
 
 # Make Predictions
 Predict a single text:
-python pipeline.py --text "Paste the text you want to check here."          
+
+>> python pipeline.py --text "Paste the text you want to check here."          
 
 # Reference
 Used for feature engineering
