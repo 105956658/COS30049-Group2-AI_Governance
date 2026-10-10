@@ -1,0 +1,90 @@
+{
+    "sourceFile": "README.md",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 18,
+            "patches": [
+                {
+                    "date": 1791608203332,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1791608213513,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,4 +14,5 @@\n 1. https://academic.oup.com/dsh/advance-article/doi/10.1093/llc/fqag064/8714041\r\n 2. https://arxiv.org/abs/2303.03697\r\n 3. https://www.researchgate.net/publication/398588043_Feature-Based_Detection_of_AI-Generated_Text_An_Analysis_of_Stylometric_and_Perplexity_Markers_in_Contemporary_Large_Language_Models\r\n \r\n+#Environmen\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1791608221035,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,5 +14,5 @@\n 1. https://academic.oup.com/dsh/advance-article/doi/10.1093/llc/fqag064/8714041\r\n 2. https://arxiv.org/abs/2303.03697\r\n 3. https://www.researchgate.net/publication/398588043_Feature-Based_Detection_of_AI-Generated_Text_An_Analysis_of_Stylometric_and_Perplexity_Markers_in_Contemporary_Large_Language_Models\r\n \r\n-#Environmen\n\\ No newline at end of file\n+#Environment Set\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1791608229274,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,5 +14,5 @@\n 1. https://academic.oup.com/dsh/advance-article/doi/10.1093/llc/fqag064/8714041\r\n 2. https://arxiv.org/abs/2303.03697\r\n 3. https://www.researchgate.net/publication/398588043_Feature-Based_Detection_of_AI-Generated_Text_An_Analysis_of_Stylometric_and_Perplexity_Markers_in_Contemporary_Large_Language_Models\r\n \r\n-#Environment Set\n\\ No newline at end of file\n+#Environment Setup ()\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1791608238942,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,5 +14,5 @@\n 1. https://academic.oup.com/dsh/advance-article/doi/10.1093/llc/fqag064/8714041\r\n 2. https://arxiv.org/abs/2303.03697\r\n 3. https://www.researchgate.net/publication/398588043_Feature-Based_Detection_of_AI-Generated_Text_An_Analysis_of_Stylometric_and_Perplexity_Markers_in_Contemporary_Large_Language_Models\r\n \r\n-#Environment Setup ()\n\\ No newline at end of file\n+# Environment Setup (Requires M)\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1791608246033,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,5 +14,5 @@\n 1. https://academic.oup.com/dsh/advance-article/doi/10.1093/llc/fqag064/8714041\r\n 2. https://arxiv.org/abs/2303.03697\r\n 3. https://www.researchgate.net/publication/398588043_Feature-Based_Detection_of_AI-Generated_Text_An_Analysis_of_Stylometric_and_Perplexity_Markers_in_Contemporary_Large_Language_Models\r\n \r\n-# Environment Setup (Requires M)\n\\ No newline at end of file\n+# Environment Setup (Requires Miniconda or Anaconda)\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1791608255077,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,5 +14,15 @@\n 1. https://academic.oup.com/dsh/advance-article/doi/10.1093/llc/fqag064/8714041\r\n 2. https://arxiv.org/abs/2303.03697\r\n 3. https://www.researchgate.net/publication/398588043_Feature-Based_Detection_of_AI-Generated_Text_An_Analysis_of_Stylometric_and_Perplexity_Markers_in_Contemporary_Large_Language_Models\r\n \r\n-# Environment Setup (Requires Miniconda or Anaconda)\n\\ No newline at end of file\n+# Environment Setup (Requires Miniconda or Anaconda)\r\n+\r\n+# create the environment with the exact versions used in the report\r\n+conda create -n ai-detect python=3.13 -y\r\n+conda activate ai-detect\r\n+\r\n+# core libraries\r\n+conda install -c conda-forge pandas=3.0.6 numpy=2.5.3 scikit-learn=1.9.1 lightgbm=4.7.0 joblib=1.6.0 -y\r\n+\r\n+# plotting + notebook (EDA only)\r\n+conda install -c conda-forge matplotlib seaborn jupyter -y\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1791608276208,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -14,15 +14,4 @@\n 1. https://academic.oup.com/dsh/advance-article/doi/10.1093/llc/fqag064/8714041\r\n 2. https://arxiv.org/abs/2303.03697\r\n 3. https://www.researchgate.net/publication/398588043_Feature-Based_Detection_of_AI-Generated_Text_An_Analysis_of_Stylometric_and_Perplexity_Markers_in_Contemporary_Large_Language_Models\r\n \r\n-# Environment Setup (Requires Miniconda or Anaconda)\r\n-\r\n-# create the environment with the exact versions used in the report\r\n-conda create -n ai-detect python=3.13 -y\r\n-conda activate ai-detect\r\n-\r\n-# core libraries\r\n-conda install -c conda-forge pandas=3.0.6 numpy=2.5.3 scikit-learn=1.9.1 lightgbm=4.7.0 joblib=1.6.0 -y\r\n-\r\n-# plotting + notebook (EDA only)\r\n-conda install -c conda-forge matplotlib seaborn jupyter -y\n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1791608285143,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,7 +1,18 @@\n # COS30049-Group2-AI_Governance\r\n Group project for COS30049 Computing Technology Innovation Project\r\n \r\n+# Environment Setup (Requires Miniconda or Anaconda)\r\n+# create the environment with the exact versions used in the report\r\n+conda create -n ai-detect python=3.13 -y\r\n+conda activate ai-detect\r\n+\r\n+# core libraries\r\n+conda install -c conda-forge pandas=3.0.6 numpy=2.5.3 scikit-learn=1.9.1 lightgbm=4.7.0 joblib=1.6.0 -y\r\n+\r\n+# plotting + notebook (EDA only)\r\n+conda install -c conda-forge matplotlib seaborn jupyter -y\r\n+\r\n # Data\r\n The data folder is gitignored because the raw CSVs are too large for GitHub (one exceeds the 100MB hard limit). Download the datasets yourself and place them in the data folder before running the file:\r\n \r\n 1. DAIGT V2 Train Dataset: https://www.kaggle.com/datasets/thedrcat/daigt-v2-train-dataset\r\n"
+                },
+                {
+                    "date": 1791608293170,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,9 @@\n # COS30049-Group2-AI_Governance\r\n Group project for COS30049 Computing Technology Innovation Project\r\n \r\n # Environment Setup (Requires Miniconda or Anaconda)\r\n-# create the environment with the exact versions used in the report\r\n+create the environment with the exact versions used in the report\r\n conda create -n ai-detect python=3.13 -y\r\n conda activate ai-detect\r\n \r\n # core libraries\r\n"
+                },
+                {
+                    "date": 1791608298915,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,9 +1,10 @@\n # COS30049-Group2-AI_Governance\r\n Group project for COS30049 Computing Technology Innovation Project\r\n \r\n # Environment Setup (Requires Miniconda or Anaconda)\r\n-create the environment with the exact versions used in the report\r\n+Create the environment with the exact versions used in the report\r\n+\r\n conda create -n ai-detect python=3.13 -y\r\n conda activate ai-detect\r\n \r\n # core libraries\r\n"
+                },
+                {
+                    "date": 1791608305944,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -6,9 +6,9 @@\n \r\n conda create -n ai-detect python=3.13 -y\r\n conda activate ai-detect\r\n \r\n-# core libraries\r\n+Core libraries\r\n conda install -c conda-forge pandas=3.0.6 numpy=2.5.3 scikit-learn=1.9.1 lightgbm=4.7.0 joblib=1.6.0 -y\r\n \r\n # plotting + notebook (EDA only)\r\n conda install -c conda-forge matplotlib seaborn jupyter -y\r\n"
+                },
+                {
+                    "date": 1791608312385,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,14 +1,16 @@\n # COS30049-Group2-AI_Governance\r\n Group project for COS30049 Computing Technology Innovation Project\r\n \r\n # Environment Setup (Requires Miniconda or Anaconda)\r\n+\r\n Create the environment with the exact versions used in the report\r\n \r\n conda create -n ai-detect python=3.13 -y\r\n conda activate ai-detect\r\n \r\n Core libraries\r\n+\r\n conda install -c conda-forge pandas=3.0.6 numpy=2.5.3 scikit-learn=1.9.1 lightgbm=4.7.0 joblib=1.6.0 -y\r\n \r\n # plotting + notebook (EDA only)\r\n conda install -c conda-forge matplotlib seaborn jupyter -y\r\n"
+                },
+                {
+                    "date": 1791608319219,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,10 +1,10 @@\n # COS30049-Group2-AI_Governance\r\n Group project for COS30049 Computing Technology Innovation Project\r\n \r\n-# Environment Setup (Requires Miniconda or Anaconda)\r\n+## Environment Setup (Requires Miniconda or Anaconda)\r\n \r\n-Create the environment with the exact versions used in the report\r\n+#Create the environment with the exact versions used in the report\r\n \r\n conda create -n ai-detect python=3.13 -y\r\n conda activate ai-detect\r\n \r\n"
+                },
+                {
+                    "date": 1791608326220,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -2,14 +2,14 @@\n Group project for COS30049 Computing Technology Innovation Project\r\n \r\n ## Environment Setup (Requires Miniconda or Anaconda)\r\n \r\n-#Create the environment with the exact versions used in the report\r\n+# Create the environment with the exact versions used in the report\r\n \r\n conda create -n ai-detect python=3.13 -y\r\n conda activate ai-detect\r\n \r\n-Core libraries\r\n+# Core libraries\r\n \r\n conda install -c conda-forge pandas=3.0.6 numpy=2.5.3 scikit-learn=1.9.1 lightgbm=4.7.0 joblib=1.6.0 -y\r\n \r\n # plotting + notebook (EDA only)\r\n"
+                },
+                {
+                    "date": 1791608332502,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -11,9 +11,10 @@\n # Core libraries\r\n \r\n conda install -c conda-forge pandas=3.0.6 numpy=2.5.3 scikit-learn=1.9.1 lightgbm=4.7.0 joblib=1.6.0 -y\r\n \r\n-# plotting + notebook (EDA only)\r\n+#  plotting + notebook (EDA only)\r\n+\r\n conda install -c conda-forge matplotlib seaborn jupyter -y\r\n \r\n # Data\r\n The data folder is gitignored because the raw CSVs are too large for GitHub (one exceeds the 100MB hard limit). Download the datasets yourself and place them in the data folder before running the file:\r\n"
+                },
+                {
+                    "date": 1791608339315,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -3,14 +3,12 @@\n \r\n ## Environment Setup (Requires Miniconda or Anaconda)\r\n \r\n # Create the environment with the exact versions used in the report\r\n-\r\n conda create -n ai-detect python=3.13 -y\r\n conda activate ai-detect\r\n \r\n # Core libraries\r\n-\r\n conda install -c conda-forge pandas=3.0.6 numpy=2.5.3 scikit-learn=1.9.1 lightgbm=4.7.0 joblib=1.6.0 -y\r\n \r\n #  plotting + notebook (EDA only)\r\n \r\n"
+                },
+                {
+                    "date": 1791608358519,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,9 +10,8 @@\n # Core libraries\r\n conda install -c conda-forge pandas=3.0.6 numpy=2.5.3 scikit-learn=1.9.1 lightgbm=4.7.0 joblib=1.6.0 -y\r\n \r\n #  plotting + notebook (EDA only)\r\n-\r\n conda install -c conda-forge matplotlib seaborn jupyter -y\r\n \r\n # Data\r\n The data folder is gitignored because the raw CSVs are too large for GitHub (one exceeds the 100MB hard limit). Download the datasets yourself and place them in the data folder before running the file:\r\n@@ -20,8 +19,10 @@\n 1. DAIGT V2 Train Dataset: https://www.kaggle.com/datasets/thedrcat/daigt-v2-train-dataset\r\n 2. AI vs Human Text Classification Dataset 2026: https://www.kaggle.com/datasets/alitaqishah/ai-vs-human-text-classification-dataset-2026\r\n 3. AI Vs Human Text: https://www.kaggle.com/datasets/shanegerami/ai-vs-human-text\r\n \r\n+\r\n+\r\n # Reference\r\n Used for feature engineering\r\n \r\n 1. https://academic.oup.com/dsh/advance-article/doi/10.1093/llc/fqag064/8714041\r\n"
+                },
+                {
+                    "date": 1791608363883,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -21,8 +21,9 @@\n 3. AI Vs Human Text: https://www.kaggle.com/datasets/shanegerami/ai-vs-human-text\r\n \r\n \r\n # Data processing\r\n+\r\n # Reference\r\n Used for feature engineering\r\n \r\n 1. https://academic.oup.com/dsh/advance-article/doi/10.1093/llc/fqag064/8714041\r\n"
+                }
+            ],
+            "date": 1791608203332,
+            "name": "Commit-0",
+            "content": "# COS30049-Group2-AI_Governance\r\nGroup project for COS30049 Computing Technology Innovation Project\r\n\r\n# Data\r\nThe data folder is gitignored because the raw CSVs are too large for GitHub (one exceeds the 100MB hard limit). Download the datasets yourself and place them in the data folder before running the file:\r\n\r\n1. DAIGT V2 Train Dataset: https://www.kaggle.com/datasets/thedrcat/daigt-v2-train-dataset\r\n2. AI vs Human Text Classification Dataset 2026: https://www.kaggle.com/datasets/alitaqishah/ai-vs-human-text-classification-dataset-2026\r\n3. AI Vs Human Text: https://www.kaggle.com/datasets/shanegerami/ai-vs-human-text\r\n\r\n# Reference\r\nUsed for feature engineering\r\n\r\n1. https://academic.oup.com/dsh/advance-article/doi/10.1093/llc/fqag064/8714041\r\n2. https://arxiv.org/abs/2303.03697\r\n3. https://www.researchgate.net/publication/398588043_Feature-Based_Detection_of_AI-Generated_Text_An_Analysis_of_Stylometric_and_Perplexity_Markers_in_Contemporary_Large_Language_Models\r\n\r\n"
+        }
+    ]
+}
