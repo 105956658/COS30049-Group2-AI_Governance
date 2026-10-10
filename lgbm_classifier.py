@@ -1,16 +1,11 @@
-"""Innovation model A - LightGBM (gradient-boosted trees) sentence classifier.
+"""Innovation model - LightGBM (gradient-boosted trees) sentence classifier.
 
-Same 9 stylometric features, same training sentences and the SAME val/test/holdout
-sentences as classifier.py (identical seeds and sizes), so the comparison with the
-LinearSVC / logistic-regression baseline is like for like.
+The baselines are linear, so each feature pushes the score in one fixed direction. Boosted trees can learn interactions (e.g. a long sentence with few
+commas means something different from a short one with few commas). If LightGBM is not better, the limit is the features, not the model.
 
-Why it is worth testing: the baselines are linear, so each feature pushes the score in
-one fixed direction. Boosted trees can learn interactions (e.g. a long sentence with few
-commas means something different from a short one with few commas). If LightGBM is not
-better, the limit is the features, not the model.
+Early stopping uses a separate slice of TRAIN documents (not used for fitting), so the validation split stays untouched. That matters because regressor.py fits on val and
+relies on the classifier never having seen it.
 
-Setup:  python -m pip install lightgbm
-Usage:  python lgbm_classifier.py
 """
 import argparse, os
 import joblib, numpy as np, pandas as pd
@@ -27,6 +22,7 @@ ap.add_argument('--val', default='data/splits/val.csv')
 ap.add_argument('--test', default='data/splits/test.csv')
 ap.add_argument('--holdout', default='data/splits/holdout_2026.csv')
 ap.add_argument('--n-docs', type=int, default=40000)
+ap.add_argument('--n-es-docs', type=int, default=5000)      # train docs held back for early stopping
 ap.add_argument('--n-eval-docs', type=int, default=5000)
 ap.add_argument('--max-sent-per-doc', type=int, default=12)
 ap.add_argument('--out', default='models/clf_lgbm.joblib')
@@ -34,19 +30,25 @@ ap.add_argument('--results', default='results/classifier_results.csv')
 a = ap.parse_args()
 
 # ---------------------------------------------------------------- data
-X, y = sentence_dataset(pd.read_csv(a.train), a.n_docs, a.max_sent_per_doc, seed=1)
-Xv, yv = sentence_dataset(pd.read_csv(a.val), a.n_eval_docs, a.max_sent_per_doc, seed=2)
-print(f'train sentences: {len(y):,} (AI share {y.mean():.2f})')
+train = pd.read_csv(a.train)
+# identical call to classifier.py -> identical training sentences
+X, y = sentence_dataset(train, a.n_docs, a.max_sent_per_doc, seed=1)
+# sentence_dataset samples with df.sample(n, random_state=1); repeat that to find the
+# documents used for training and draw the early-stopping documents from the rest
+used = train.sample(min(a.n_docs, len(train)), random_state=1).index
+es_pool = train.drop(index=used)
+Xes, yes = sentence_dataset(es_pool, a.n_es_docs, a.max_sent_per_doc, seed=8)
+print(f'train sentences: {len(y):,} (AI share {y.mean():.2f}); '
+      f'early-stopping sentences: {len(yes):,}')
 
 # ---------------------------------------------------------------- model
-# Early stopping on the validation sentences stops boosting before it overfits.
 # No scaling needed: trees are insensitive to feature scale.
 clf = lgb.LGBMClassifier(
     n_estimators=1000, learning_rate=0.05, num_leaves=63,
     min_child_samples=50, subsample=0.8, subsample_freq=1, colsample_bytree=0.8,
     class_weight='balanced',          # same class handling as the baselines
     random_state=0, n_jobs=-1, verbose=-1)
-clf.fit(X, y, eval_set=[(Xv, yv)], eval_metric='auc',
+clf.fit(X, y, eval_set=[(Xes, yes)], eval_metric='auc',
         callbacks=[lgb.early_stopping(50, verbose=False)])
 print('trees used:', clf.best_iteration_)
 
@@ -68,7 +70,7 @@ def evaluate(name, path, seed):
     return row
 
 
-# note: val was used for early stopping, so test is the fair number to report
+# val is no longer used for early stopping, so all three numbers are clean
 rows = [evaluate('val', a.val, seed=2),
         evaluate('test', a.test, seed=6),
         evaluate('holdout_2026', a.holdout, seed=7)]

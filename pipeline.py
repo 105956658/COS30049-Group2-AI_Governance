@@ -1,4 +1,6 @@
 """Glue used by regressor.py and by the app: chains classifier -> GMM -> RFR."""
+"""Mean tree prediction plus the 5th-95th percentile spread across trees."""
+
 import joblib
 import numpy as np
 from features import (featurize_docs, aggregate_doc, split_sentences, is_scorable,

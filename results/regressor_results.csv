@@ -1,0 +1,3 @@
+set,n,auc,acc@0.5,mae,baseline_mean_p_auc,tree_band_width
+test,10000,0.9827,0.9363,0.1051,0.957,0.3341
+holdout_2026,966,0.6828,0.5373,0.4553,0.659,0.5317
